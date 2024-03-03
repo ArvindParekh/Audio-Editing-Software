@@ -6,6 +6,8 @@ import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 function App() {
    const inputRef = useRef(null);
    const [audioArr, setAudioArr] = useState([]);
+   const [isPlaying, setIsPlaying] = useState(false);
+   const [currentTrack, setCurrentTrack] = useState(0);
 
    function getFileFromDevice() {
       inputRef.current.click();
@@ -19,10 +21,6 @@ function App() {
       setAudioArr((prevArr) => [...prevArr, ...newAudioArr]);
    }
 
-   useEffect(() => {
-      console.log(audioArr);
-   }, [audioArr]);
-
    const handleOnDragEnd = (result) => {
       if (!result.destination) return;
 
@@ -33,15 +31,28 @@ function App() {
       setAudioArr(items);
    };
 
+   const handleTrackFinish = () => {
+      setCurrentTrack((prev) => prev + 1);
+   };
+
+   const handlePlay = () => {
+      setIsPlaying(true);
+   };
+
    return (
-      <main className='w-screen h-screen flex items-center justify-center border'>
+      <main className='w-screen h-screen flex flex-col items-center justify-center bg-gray-200'>
+         {audioArr.length !== 0 && (
+            <h1 className='text-4xl font-bold text-slate-800 mb-6 bg-transparent'>
+               Alright! Let&apos;s get rolling!
+            </h1>
+         )}
          <DragDropContext onDragEnd={handleOnDragEnd}>
-            <Droppable droppableId='droppableId' direction='horizontal'>
+            <Droppable droppableId='droppable' direction='horizontal'>
                {(provided) => (
                   <div
                      {...provided.droppableProps}
                      ref={provided.innerRef}
-                     className='flex flex-row relative' // Apply the CSS class here
+                     className='flex flex-row p-4 bg-gray-300 rounded-md'
                   >
                      {audioArr.map((audioFile, index) => (
                         <Draggable
@@ -54,9 +65,13 @@ function App() {
                                  ref={provided.innerRef}
                                  {...provided.draggableProps}
                                  {...provided.dragHandleProps}
-                                 className=''
+                                 className='mx-2'
                               >
-                                 <Track audioFile={audioFile} />
+                                 <Track
+                                    audioFile={audioFile}
+                                    play={isPlaying && currentTrack === index}
+                                    onTrackFinish={handleTrackFinish}
+                                 />
                               </div>
                            )}
                         </Draggable>
@@ -67,7 +82,8 @@ function App() {
             </Droppable>
          </DragDropContext>
 
-         <AudioPlayer />
+         <AudioPlayer onPlay={handlePlay} />
+
          <input
             type='file'
             accept='audio/*'
@@ -77,7 +93,7 @@ function App() {
             multiple
          />
          <button
-            className='mt-5 rounded-md border-none bg-black p-2 text-base font-medium text-white'
+            className='mt-5 rounded-md bg-gray-800 p-2 text-base font-medium text-white hover:bg-white hover:text-gray-800 transition-all hover:border hover:border-gray-800'
             onClick={getFileFromDevice}
          >
             Select File

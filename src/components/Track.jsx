@@ -1,30 +1,43 @@
+import { useState } from "react";
 import { useRef, useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
-const Track = ({ audioFile }) => {
+// eslint-disable-next-line react/prop-types
+const Track = ({ audioFile, play, onTrackFinish }) => {
    const waveformRef = useRef(null);
+   const [waveSurfer, setWaveSurfer] = useState(null);
 
    useEffect(() => {
-      console.log(audioFile);
       const wavesurfer = WaveSurfer.create({
          container: waveformRef.current,
-         waveColor: "violet",
-         progressColor: "purple",
+         waveColor: "white",
+         progressColor: "violet",
          cursorWidth: 1,
-         height: 100,
+         height: 200,
          url: audioFile,
+         responsive: true,
       });
 
-      wavesurfer.on("interaction", () => {
-         wavesurfer.play();
+      wavesurfer.on("ready", () => {
+         // wavesurfer.load(audioFile);
+         if (play) {
+            wavesurfer.play();
+         }
       });
+
+      wavesurfer.on("finish", onTrackFinish);
 
       return () => {
          wavesurfer.destroy();
       };
-   }, [audioFile]);
+   }, [play, audioFile, onTrackFinish]);
 
-   return <div ref={waveformRef} className='w-96 h-96 border-4 bg-white'></div>;
+   return (
+      <div
+         ref={waveformRef}
+         className='w-96 h-50 border-4 bg-white shadow-lg rounded-md overflow-hidden'
+      ></div>
+   );
 };
 
 export default Track;
