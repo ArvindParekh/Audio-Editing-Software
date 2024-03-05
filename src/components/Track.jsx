@@ -15,15 +15,19 @@ const Track = ({ audioFile, play, onTrackFinish }) => {
          cursorWidth: 1,
          height: 200,
          url: audioFile,
-         responsive: true,
+         interact: play ? true : false,
+         // responsive: true,
       });
 
-      wavesurfer.on("ready", () => {
-         // wavesurfer.load(audioFile);
-         if (play) {
+      if (play) {
+         wavesurfer.on("ready", () => {
+            // wavesurfer.load(audioFile);
             wavesurfer.play();
-         }
-      });
+         });
+      }
+      else{
+         wavesurfer.pause();
+      }
 
       wavesurfer.on("finish", onTrackFinish);
 

@@ -9,6 +9,31 @@ function App() {
    const [isPlaying, setIsPlaying] = useState(false);
    const [currentTrack, setCurrentTrack] = useState(0);
 
+   useEffect(() => {
+      // Add event listeners for drag and drop
+      const handleDragOver = (e) => {
+         e.preventDefault();
+      };
+
+      const handleDrop = (e) => {
+         e.preventDefault();
+         const files = e.dataTransfer.files;
+         const newAudioArr = Array.from(files).map((file) =>
+            URL.createObjectURL(file)
+         );
+         setAudioArr((prevArr) => [...prevArr, ...newAudioArr]);
+      };
+
+      window.addEventListener("dragover", handleDragOver);
+      window.addEventListener("drop", handleDrop);
+
+      // Cleanup event listeners on component unmount
+      return () => {
+         window.removeEventListener("dragover", handleDragOver);
+         window.removeEventListener("drop", handleDrop);
+      };
+   }, []);
+
    function getFileFromDevice() {
       inputRef.current.click();
    }
@@ -32,11 +57,17 @@ function App() {
    };
 
    const handleTrackFinish = () => {
-      setCurrentTrack((prev) => prev + 1);
+      console.log(currentTrack, audioArr.length);
+      if (currentTrack == audioArr.length - 1) {
+         setCurrentTrack(0);
+         setIsPlaying(false);
+      } else {
+         setCurrentTrack((prev) => prev + 1);
+      }
    };
 
    const handlePlay = () => {
-      setIsPlaying(true);
+      setIsPlaying((prev) => !prev);
    };
 
    return (
@@ -96,7 +127,7 @@ function App() {
             className='mt-5 rounded-md bg-gray-800 p-2 text-base font-medium text-white hover:bg-white hover:text-gray-800 transition-all hover:border hover:border-gray-800'
             onClick={getFileFromDevice}
          >
-            Select File
+            Select a file or drop it here
          </button>
       </main>
    );
