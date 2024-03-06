@@ -10,9 +10,9 @@ React was chosen as the primary library for frontend development due to its comp
 
 ## Features and Functionalities
 
-- **Drag-and-Drop:** Implemented drag-and-drop functionality using `react-beautiful-dnd` to allow users to rearrange audio tracks effortlessly.
-- **Audio Waveform Display:** Utilized the `wavesurfer.js` library to render interactive audio waveforms for each track.
-- **Dynamic Playback:** Integrated real-time playback, ensuring users can experience the audio arrangement as they drag and drop tracks.
+-  **Drag-and-Drop:** Implemented drag-and-drop functionality using `react-beautiful-dnd` to allow users to rearrange audio tracks effortlessly.
+-  **Audio Waveform Display:** Utilized the `wavesurfer.js` library to render interactive audio waveforms for each track.
+-  **Dynamic Playback:** Integrated real-time playback, ensuring users can experience the audio arrangement as they drag and drop tracks.
 
 ## 🛠️ Challenges
 
@@ -28,7 +28,15 @@ Managing multiple audio tracks, including adding, uploading, and rearranging tra
 
 Achieving synchronized playback with rearranged audio tracks presented a significant challenge. Handling the event fired after drag-and-drop ends was crucial for updating the array of audio files and maintaining synchronized playback.
 
+## Project Structure 
+
+- `src/App.jsx`: The main component that renders the entire application. Manages the state, file uploads, and the drag-and-drop functionality.
+
+- `src/components/AudioPlayer.jsx`: A component responsible for rendering the audio player, controlling playback, and handling play/pause functionality.
+
+- `src/components/Track.jsx`: A component representing an individual audio track on the timeline. It utilizes the wavesurfer.js library for audio visualization and playback.
 ## 🌐 Website Link
 
 [Audio-Pill-Player](https://audio-pill-player.netlify.app)  
 [Loom Video](#)
+
