@@ -6,8 +6,6 @@ const AudioPlayer = ({ onPlay }) => {
                onClick={onPlay}
                className='bg-white flex items-center justify-center gap-2 p-3 rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none focus:ring focus:border-blue-300'
             >
-               {/* You can use your preferred Play/Pause icon here */}
-               {/** Example using Font Awesome icons */}
                <img
                   src='/play-solid.svg'
                   width={20}

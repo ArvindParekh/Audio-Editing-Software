@@ -1,11 +1,9 @@
-import { useState } from "react";
 import { useRef, useEffect } from "react";
 import WaveSurfer from "wavesurfer.js";
 
 // eslint-disable-next-line react/prop-types
-const Track = ({ audioFile, play, onTrackFinish }) => {
+const Track = ({ audioFile, play, onTrackFinish, playingStatus }) => {
    const waveformRef = useRef(null);
-   const [waveSurfer, setWaveSurfer] = useState(null);
 
    useEffect(() => {
       const wavesurfer = WaveSurfer.create({
@@ -16,20 +14,22 @@ const Track = ({ audioFile, play, onTrackFinish }) => {
          height: 200,
          url: audioFile,
          interact: play ? true : false,
-         // responsive: true,
       });
 
       if (play) {
          wavesurfer.on("ready", () => {
-            // wavesurfer.load(audioFile);
             wavesurfer.play();
          });
-      }
-      else{
+      } else if (playingStatus) {
          wavesurfer.pause();
       }
 
-      wavesurfer.on("finish", onTrackFinish);
+      wavesurfer.on("finish", () => {
+         // const duration = wavesurfer.getDuration();
+         // console.log(duration, wavesurfer.getDuration());
+         // wavesurfer.seekTo(duration);
+         onTrackFinish();
+      });
 
       return () => {
          wavesurfer.destroy();

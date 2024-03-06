@@ -10,7 +10,7 @@ function App() {
    const [currentTrack, setCurrentTrack] = useState(0);
 
    useEffect(() => {
-      // Add event listeners for drag and drop
+      // Event listeners for drag and drop
       const handleDragOver = (e) => {
          e.preventDefault();
       };
@@ -27,17 +27,19 @@ function App() {
       window.addEventListener("dragover", handleDragOver);
       window.addEventListener("drop", handleDrop);
 
-      // Cleanup event listeners on component unmount
+      // Cleaning up the event listeners on component unmount
       return () => {
          window.removeEventListener("dragover", handleDragOver);
          window.removeEventListener("drop", handleDrop);
       };
    }, []);
 
+   // Opens up the file manager
    function getFileFromDevice() {
       inputRef.current.click();
    }
 
+   // Updates the AudioArr array with the files you select
    function handleChange(e) {
       const files = e.target.files;
       const newAudioArr = Array.from(files).map((file) =>
@@ -56,6 +58,7 @@ function App() {
       setAudioArr(items);
    };
 
+   // When a wavesurfer track finishes, it calls the handleTrackFinish function to play the next track on the timeline
    const handleTrackFinish = () => {
       console.log(currentTrack, audioArr.length);
       if (currentTrack == audioArr.length - 1) {
@@ -66,6 +69,7 @@ function App() {
       }
    };
 
+   // Toggles the play/pause functionality
    const handlePlay = () => {
       setIsPlaying((prev) => !prev);
    };
@@ -77,6 +81,8 @@ function App() {
                Alright! Let&apos;s get rolling!
             </h1>
          )}
+
+         {/* Setting up a global drag-drop context here - using react-beautiful-dnd */}
          <DragDropContext onDragEnd={handleOnDragEnd}>
             <Droppable droppableId='droppable' direction='horizontal'>
                {(provided) => (
@@ -85,6 +91,7 @@ function App() {
                      ref={provided.innerRef}
                      className='flex flex-row p-4 bg-gray-300 rounded-md'
                   >
+                     {/* Mapping over the audioArr and listing out all the tracks onto the timeline */}
                      {audioArr.map((audioFile, index) => (
                         <Draggable
                            key={audioFile}
@@ -102,18 +109,18 @@ function App() {
                                     audioFile={audioFile}
                                     play={isPlaying && currentTrack === index}
                                     onTrackFinish={handleTrackFinish}
+                                    playingStatus={currentTrack === index}
                                  />
                               </div>
                            )}
                         </Draggable>
                      ))}
+
                      {provided.placeholder}
                   </div>
                )}
             </Droppable>
          </DragDropContext>
-
-         <AudioPlayer onPlay={handlePlay} />
 
          <input
             type='file'
@@ -129,6 +136,8 @@ function App() {
          >
             Select a file or drop it here
          </button>
+
+         <AudioPlayer onPlay={handlePlay} />
       </main>
    );
 }
